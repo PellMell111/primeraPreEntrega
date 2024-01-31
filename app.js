@@ -14,7 +14,7 @@ app.use('/api/carts', cartsRouter);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('¡Ocurrío algún problema!');
+    res.status(500).send(`¡Ocurrío algún problema! Detalles: ${err.message}`);
 });
 
 app.listen(PORT, () => {

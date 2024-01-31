@@ -32,15 +32,17 @@ router.get('/:pid', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    const { title, description, code, price, status, stock, category, thumbnails} = req.body;
+    const { title, description, code, price, status, stock, category, thumbnails } = req.body;
 
-    if(!title || typeof title !== string || !description || typeof description !== string || !code || !price || typeof price !== number || !stock || typeof stock !== number || !category || typeof category !== string) {
+    if (!title || typeof title !== 'string' || !description || typeof description !== 'string' || !code || !price || typeof price !== 'number' || !stock || typeof stock !== 'number' || !category || typeof category !== 'string') {
         res.status(400).json({ mensaje: 'Todos los campos son requeridos.' });
         return;
     }
+
     if (!Array.isArray(products)) {
         products = [];
     }
+
     const newProduct = {
         id: products.length + 1,
         title,
@@ -52,6 +54,7 @@ router.post('/', (req, res) => {
         category,
         thumbnails: thumbnails || []
     };
+
     products.push(newProduct);
     fs.writeFileSync(productsDataFile, JSON.stringify(products), 'utf8');
     res.status(201).json({ status: 'success', message: 'Producto añadido con éxito.', product: newProduct });
@@ -62,36 +65,36 @@ router.put('/:pid', (req, res) => {
     const { title, description, code, price, status, stock, category, thumbnails } = req.body;
     const editProduct = products.find((product) => product.id === parseInt(pid));
 
-    if(pid < 1 || pid > (products.length)) {
-        res
-        .status(404)
-        .json({ status: 'error', message: 'Producto no encontrado.' });
-    return;
+    if (pid < 1 || pid > products.length) {
+        res.status(404).json({ status: 'error', message: 'Producto no encontrado.' });
+        return;
     }
-    if(title || typeof title !== string) {
+
+    if (title !== undefined && typeof title === 'string') {
         editProduct.title = title;
     }
-    if(description || typeof description !== string) {
+    if (description !== undefined && typeof description === 'string') {
         editProduct.description = description;
     }
-    if(code) {
+    if (code !== undefined) {
         editProduct.code = code;
     }
-    if(price || typeof price !== number) {
+    if (price !== undefined && typeof price === 'number') {
         editProduct.price = price;
     }
-    if(status) {
+    if (status !== undefined) {
         editProduct.status = status;
     }
-    if(stock) {
+    if (stock !== undefined && typeof stock === 'number') {
         editProduct.stock = stock;
     }
-    if(category || typeof category !== string) {
+    if (category !== undefined && typeof category === 'string') {
         editProduct.category = category;
     }
-    if(thumbnails || typeof thumbnails !== string) {
+    if (thumbnails !== undefined && !Array.isArray(thumbnails)) {
         editProduct.thumbnails = thumbnails;
     }
+
     fs.writeFileSync(productsDataFile, JSON.stringify(products), 'utf8');
     res.status(201).json({ status: 'success', message: 'Producto editado con éxito.', product: editProduct });
 });
